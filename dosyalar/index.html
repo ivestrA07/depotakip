@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürün Listesi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1>Çıkış Yapılan Malzemeler</h1>
+    <link rel="stylesheet" href="css/styles.css"> <!-- CSS dosyasını dahil ettik -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Barkod</th>
+                <th>Ürün Adı</th>
+                <th>Adet</th>
+                <th>Nereye Gitti</th>
+                <th>Kullanıcı Adı</th>
+                <th>Çıkış Tarihi</th>
+            </tr>
+        </thead>
+        <tbody id="urunler">
+        </tbody>
+    </table>
+</div>
+<script src="js/script.js"></script> <!-- JavaScript dosyasını dahil ettik -->
+<script>
+    async function urunleriGetir() {
+        try {
+            const response = await fetch("https://localhost:7063/api/Urun/urunler"); // API'den veri alıyoruz
+            const data = await response.json();
+            const tbody = document.getElementById("urunler");
+            tbody.innerHTML = ""; // Önce içerik temizleniyor
+
+            // Eğer veri yoksa kullanıcıya uyarı ver
+            if (data.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='6'>Ürün bulunamadı!</td></tr>";
+            }
+
+            // Her bir ürünü tabloya ekliyoruz
+            data.forEach(urun => {
+                const row = `<tr>
+                    <td>${urun.barkod}</td>
+                    <td>${urun.urunAdi}</td>
+                    <td>${urun.adet}</td>
+                    <td>${urun.nereyeGitti}</td>
+                    <td>${urun.kullaniciAdi}</td>
+                    <td>${new Date(urun.cikisTarihi).toLocaleString()}</td> <!-- Çıkış tarihi formatlama -->
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        } catch (error) {
+            console.error("Veri alınırken hata oluştu:", error);
+        }
+    }
+
+    // Sayfa yüklendiğinde verileri getir
+    urunleriGetir();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
